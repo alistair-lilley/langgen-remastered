@@ -22,14 +22,18 @@ class IPAEncoderDecoder:
         self.chartpaths = chartpaths
         self.filenames = filenames
         self.dirpath = dirpath
-        self._maxkey = 0
+        self._maxkey = 1
         self._ctoi = dict()
         self._itoc = dict()
+        self._ctoi['0'] = 0
+        self._itoc[0] = '0'
 
     def _encodechars(self: IPAEncoderDecoder, filecontents: str):
-        for line in filecontents:
-            for chartuple in line.split("|"):
+        for line in filecontents.split('\n'):
+            for chartuple in line.strip().split("|"):
                 for ch in chartuple.split(","):
+                    if ch == '0':
+                        continue
                     try:
                         assert ch not in self._ctoi
                         self._ctoi[ch] = self._maxkey
@@ -53,13 +57,13 @@ class IPAEncoderDecoder:
         encoded_filepath = "encoded." + filepath
         encoded_data = []
         with open(os.path.join(dirpath, filepath), "r") as f:
-            filecontents = f.read()
+            filecontents = f.read().split('\n')
             for line in filecontents:
                 encline = []
                 for chartuple in line.split("|"):
                     enctuple = []
                     for ch in chartuple.split(","):
-                        enctuple.append(self._ctoi[ch])
+                        enctuple.append(str(self._ctoi[ch]))
                     encline.append(",".join(enctuple))
                 encoded_data.append("|".join(encline))
         data = "\n".join(encoded_data)
@@ -74,12 +78,12 @@ class IPAEncoderDecoder:
         decoded_filepath = "decoded." + filepath
         decoded_data = []
         with open(os.path.join(dirpath, filepath), "r") as f:
-            filecontents = f.read()
+            filecontents = f.read().split('\n')
             for line in filecontents:
                 encodedchars = line.split(".")
                 decodedchars = ""
                 for encchar in encodedchars:
-                    decodedchars += self._itoc[encchar]
+                    decodedchars += self._itoc[int(encchar)]
                 decoded_data.append(decodedchars)
         data = "\n".join(decoded_data)
         with open(os.path.join(dirpath, decoded_filepath), "w") as f:
