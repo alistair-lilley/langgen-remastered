@@ -2,7 +2,7 @@
 */
 #ifndef LANGGENTEST_IPACONTAINER_H
 #define LANGGENTEST_IPACONTAINER_H
-#include "langgenLib/IPAContainer.h"
+#include "langgen/IPAContainer.h"
 #include <string>
 #include <vector>
 #include <map>
