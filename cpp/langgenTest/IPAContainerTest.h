@@ -1,7 +1,7 @@
 /* Tests for IPAContainer header file
 */
-#ifndef LANGGENTEST_IPACONTAINER_H
-#define LANGGENTEST_IPACONTAINER_H
+#ifndef LANGGENTEST_IPACONTAINERTEST_H
+#define LANGGENTEST_IPACONTAINERTEST_H
 #include "langgen/IPAContainer.h"
 #include <string>
 #include <vector>
@@ -10,6 +10,8 @@
 IPA initializeIPA();
 
 bool TestIPAloadOneChart(IPA&);
+
+bool TestIPAloadOneKey(IPA&);
 
 
 #endif

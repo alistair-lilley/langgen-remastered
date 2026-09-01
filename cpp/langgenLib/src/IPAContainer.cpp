@@ -7,8 +7,39 @@ This object holds the IPA data for the syllable generation process
 #include <vector>
 #include <fstream>
 #include <iostream>
-#include "langgenLib/IPAContainer.h"
+#include "langgen/IPAContainer.h"
 
+/*
+Loading IPA charts and keys
+Charts are in the format
+
+```
+1,2|0,0|0,0|3,4|0,0|5,6|7,8|9,10|11,12|0,0|13,0
+14,15|0,0|0,0|16,17|0,0|18,19|0,0|0,0|0,0|0,0|0,0
+```
+
+The integers represent individual IPA characters that can't easily be represented in C++ cuz it 
+hates unicode
+We have to extract this into an indexing-friendly format, aka vector<vector<vector<int>>>
+---------
+Keys are in the format
+
+```
+CONS|0:4,6:8;0:11;0:2
+
+VLSS|0:2;0:11;0:1
+```
+
+The 4-letter code at the beginning of each line represents the category name
+The #:#,#:# pairs represent integer ranges in the form [start, end)
+The ranges represent column, row, and pair indexing, e.g. referencing the chart above, VLSS would 
+reference both rows, all columns, and only the first of each pair
+We have to expand the pairs and map them to the category names, aka map<string, vector<vector<int>>>
+*/
+
+// Key extractors
+// in: "CONS|0:4,6:8;0:11;0:2"
+// out: catname = "CONS", rangesets = {"0:4,6:8". "0:11", "0:2"}
 void getCatnameRangesets(std::string& line, std::string& catname, std::vector<std::string>& rangesets)
 {
     std::string item;
@@ -24,6 +55,10 @@ void getCatnameRangesets(std::string& line, std::string& catname, std::vector<st
             rangesets.push_back(item);
             item = "";
         }
+        else if (ch == '\n')
+        {
+            continue;
+        }
         else
         {
             item += ch;
@@ -32,6 +67,8 @@ void getCatnameRangesets(std::string& line, std::string& catname, std::vector<st
     rangesets.push_back(item);
 }
 
+// in: {"0:4,6:8", "0:11", "0:2"}
+// out: {{"0:4", "6:8"}, {"0:11"}, {"0:2"}}
 void getRanges(std::vector<std::string>& rangesets, std::vector<std::vector<std::string>>& ranges)
 {
     int rangepos = 0;
@@ -56,6 +93,8 @@ void getRanges(std::vector<std::string>& rangesets, std::vector<std::vector<std:
     rangepos = 0;
 }
 
+// in: {{"0:4", "6:8"}, {"0:11"}, {"0:2"}}
+// out: 
 void expandRanges(std::vector<std::vector<std::string>>& ranges, std::vector<std::vector<int>>& expandedRanges)
 {
     int rangepos = 0;
@@ -71,6 +110,7 @@ void expandRanges(std::vector<std::vector<std::string>>& ranges, std::vector<std
                 if (ch == ':')
                 {
                     start = stoi(rangenum);
+                    rangenum = "";
                 }
                 else
                 {
@@ -87,6 +127,8 @@ void expandRanges(std::vector<std::vector<std::string>>& ranges, std::vector<std
     }
 }
 
+
+// Chart extractors
 void getLineItems(std::string& line, std::vector<std::string>& lineitems)
 {
     std::string lineitem;
@@ -123,10 +165,13 @@ void getRow(std::vector<std::string>& lineitems, std::vector<std::vector<int>>& 
                 pairitem += ch;
             }
         }
+        tuple.push_back(stoi(pairitem));
+        pairitem = "";
         row.push_back(tuple);
     }
 }
 
+// Object definition
 IPA::IPA(std::string& DP, std::string& CC, std::string& VC, std::string& CK, std::string& VK)
 {
     dirpath = DP;
@@ -136,6 +181,7 @@ IPA::IPA(std::string& DP, std::string& CC, std::string& VC, std::string& CK, std
     vipak = VK;
 }
 
+// Loading one chart
 IPAChart IPA::loadOneChart(std::string& chartname)
 {
     std::string path = dirpath + "/" + chartname;
@@ -195,8 +241,16 @@ IPAKey IPA::loadOneKey(std::string& keyname)
         std::vector<std::string> rangesets;
         getCatnameRangesets(line, catname, rangesets);
         std::vector<std::vector<std::string>> ranges;
+        for(auto const& set : rangesets)
+        {
+            ranges.push_back(std::vector<std::string>());
+        }
         getRanges(rangesets, ranges);
         std::vector<std::vector<int>> expandedRanges;
+        for(auto const& range : ranges)
+        {
+            expandedRanges.push_back(std::vector<int>());
+        }
         expandRanges(ranges, expandedRanges);
         wholekey.key.insert({catname, expandedRanges});
     }
