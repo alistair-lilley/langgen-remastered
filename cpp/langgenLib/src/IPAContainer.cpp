@@ -94,7 +94,7 @@ void getRanges(std::vector<std::string>& rangesets, std::vector<std::vector<std:
 }
 
 // in: {{"0:4", "6:8"}, {"0:11"}, {"0:2"}}
-// out: 
+// out: {{0, 1, 2, 3, 6, 7, 8}, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, {0, 1}}
 void expandRanges(std::vector<std::vector<std::string>>& ranges, std::vector<std::vector<int>>& expandedRanges)
 {
     int rangepos = 0;
@@ -129,6 +129,8 @@ void expandRanges(std::vector<std::vector<std::string>>& ranges, std::vector<std
 
 
 // Chart extractors
+// in: "1,2|0,0|0,0|3,4"
+// out: {"1,2", "0,0,", "0,0", "3,4"}
 void getLineItems(std::string& line, std::vector<std::string>& lineitems)
 {
     std::string lineitem;
@@ -147,6 +149,8 @@ void getLineItems(std::string& line, std::vector<std::string>& lineitems)
     lineitems.push_back(lineitem);
 }
 
+// in: {"1,2", "0,0,", "0,0", "3,4"}
+// out: {{1, 2}, {0, 0}, {0, 0}, {3, 4}}
 void getRow(std::vector<std::string>& lineitems, std::vector<std::vector<int>>& row)
 {
     std::string pairitem;
