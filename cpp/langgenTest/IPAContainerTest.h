@@ -13,5 +13,9 @@ bool TestIPAloadOneChart(IPA&);
 
 bool TestIPAloadOneKey(IPA&);
 
+bool TestIPAgetFeature(IPA&);
+
+bool TestIPAremoveNotFeature(IPA&);
+
 
 #endif

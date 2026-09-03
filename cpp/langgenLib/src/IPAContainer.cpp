@@ -261,6 +261,8 @@ std::set<int> IPA::getFeature(std::string& feature)
             }
         }
     }
+    // 0 is placeholder for empty
+    phonemes.erase(0);
     return phonemes;
 }
 
@@ -269,7 +271,6 @@ std::set<int> IPA::getFeature(std::string& feature)
 std::set<int> IPA::removeNotFeature(std::string& feature, std::set<int>& phonemes)
 {
     // Determines which chart we're looking at
-    std::set<int> updatedPhonemes;
     auto chaskey = ckey.key.find(feature);
     auto vhaskey = vkey.key.find(feature);
     IPAKey key;
@@ -294,8 +295,7 @@ std::set<int> IPA::removeNotFeature(std::string& feature, std::set<int>& phoneme
     rows = key.key[feature].at(0);
     cols = key.key[feature].at(1);
     pairs = key.key[feature].at(2);
-    // Compiles a list of phonemes to exclude
-    std::set<int> exclude;
+    // Removes all excluded phonemes from phonemes
     for (auto rrr : rows)
     {
         for (auto cc: cols)
@@ -303,19 +303,11 @@ std::set<int> IPA::removeNotFeature(std::string& feature, std::set<int>& phoneme
             for (auto ppp: pairs)
             {
                 auto phoneme = chart.chart.at(rrr).at(cc).at(ppp);
-                exclude.insert(phoneme);
+                phonemes.erase(phoneme);
             }
         }
     }
-    // Adds all phonemes in original list that aren't in the exclude set
-    for (auto phon: phonemes)
-    {
-        if (!exclude.count(phon))
-        {
-            updatedPhonemes.insert(phon);
-        }
-    }
-    return updatedPhonemes;
+    return phonemes;
 }
 
 // Loading one chart

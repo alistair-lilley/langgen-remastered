@@ -54,7 +54,7 @@ bool TestIPAloadOneChart(IPA& ipa)
     }
     catch (const std::exception& e) 
     {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         return false;
     }
 
@@ -70,7 +70,7 @@ bool TestIPAloadOneKey(IPA& ipa)
         }},
         {"VLSS", {
             {0, 1},
-            {0, 1, 2, 3, 5, 6, 7, 8, 9, 10},
+            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10},
             {0},
         }},
         {"BILA", {
@@ -86,9 +86,52 @@ bool TestIPAloadOneKey(IPA& ipa)
     }
     catch (const std::exception& e) 
     {
-        std::cout << e.what() << std::endl;
+        std::cerr << e.what() << std::endl;
         return false;
     }
+}
+
+bool TestIPAgetFeature(IPA& ipa)
+{
+    std::set<int> truthset = {
+        1, 3, 5, 7, 9, 11, 13, 14, 16, 18
+    };
+    try
+    {
+        ipa.loadIPAChartsKeys();
+        std::string feature = "VLSS";
+        std::set<int> phonemes = ipa.getFeature(feature);
+        return phonemes == truthset;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return false;
+    }
+    
+}
+
+bool TestIPAremoveNotFeature(IPA& ipa)
+{
+    std::set<int> truthset = {
+        3, 5, 7, 9, 11, 13, 16, 18
+    };
+    try
+    {
+        ipa.loadIPAChartsKeys();
+        std::string feature = "VLSS";
+        std::set<int> phonemes = ipa.getFeature(feature);
+        std::string notFeature = "BILA";
+        phonemes = ipa.removeNotFeature(notFeature, phonemes);
+        return phonemes == truthset;
+        
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return false;
+    }
+    
 }
 
 
