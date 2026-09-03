@@ -5,6 +5,7 @@ This object holds the IPA data for the syllable generation process
 #define LANGGENLIB_IPACONTAINER_H
 #include <string>
 #include <vector>
+#include <set>
 #include <map>
 
 struct IPAChart
@@ -29,12 +30,15 @@ class IPA
 public:
     IPA(std::string&, std::string&, std::string&, std::string&, std::string&);
     void loadIPAChartsKeys();
-    std::vector<int> getFeature(std::string&);
-    std::vector<int> removeNotFeature(std::string&);
-    std::string dirpath, cipac, vipac, cipak, vipak;
+    std::vector<int> compileFeatures(std::vector<std::string>&, std::vector<std::string>&);
+    void getFeatures(std::vector<std::string>&, std::set<int>&);
+    void removeNotFeatures(std::vector<std::string>&, std::set<int>&);
+    std::set<int> getFeature(std::string&);
+    std::set<int> removeNotFeature(std::string&, std::set<int>&);
     IPAChart loadOneChart(std::string&);
     IPAKey loadOneKey(std::string&);
 private:
+    std::string dirpath, cipac, vipac, cipak, vipak;
     IPAChart cchart;
     IPAChart vchart;
     IPAKey ckey;

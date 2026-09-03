@@ -5,6 +5,7 @@ This object holds the IPA data for the syllable generation process
 #define LANGGENLIB_IPACONTAINER_CPP
 #include <string>
 #include <vector>
+#include <set>
 #include <fstream>
 #include <iostream>
 #include "langgen/IPAContainer.h"
@@ -183,6 +184,138 @@ IPA::IPA(std::string& DP, std::string& CC, std::string& VC, std::string& CK, std
     vipac = VC;
     cipak = CK;
     vipak = VK;
+}
+
+// load both IPA charts and keys into the object
+void IPA::loadIPAChartsKeys()
+{
+    cchart = loadOneChart(cipac);
+    vchart = loadOneChart(vipac);
+    ckey = loadOneKey(cipak);
+    vkey = loadOneKey(vipak);
+}
+
+std::vector<int> IPA::compileFeatures(std::vector<std::string>& addFeatures, std::vector<std::string>& remFeatures)
+{
+    std::set<int> phonemes;
+    getFeatures(addFeatures, phonemes);
+    removeNotFeatures(remFeatures, phonemes);
+    return std::vector<int> (phonemes.begin(), phonemes.end());
+}
+
+void IPA::getFeatures(std::vector<std::string>& features, std::set<int>& phonemes)
+{
+    for (auto feat: features)
+    {
+        phonemes.merge(getFeature(feat));
+    }
+}
+
+void IPA::removeNotFeatures(std::vector<std::string>& features, std::set<int>& phonemes)
+{
+    for (auto feat: features)
+    {
+        phonemes = removeNotFeature(feat, phonemes);
+    }
+}
+
+// in: "VLSS"
+// out: {1, 3, 5, 7, 9, 11, 13, 14, 16, 18}
+std::set<int> IPA::getFeature(std::string& feature)
+{
+    // Determines which chart we're looking at
+    std::set<int> phonemes;
+    auto chaskey = ckey.key.find(feature);
+    auto vhaskey = vkey.key.find(feature);
+    IPAKey key;
+    IPAChart chart;
+    if (chaskey != ckey.key.end())
+    {
+        key = ckey;
+        chart = cchart;
+    }
+    else if (vhaskey != vkey.key.end())
+    {
+        key = vkey;
+        chart = vchart;
+    }
+    // returns empty if key isn't found
+    else
+    {
+        return std::set<int>();
+    }
+    // Gets the rows, columns, and pairs to look at
+    std::vector<int> rows, cols, pairs;
+    rows = key.key[feature].at(0);
+    cols = key.key[feature].at(1);
+    pairs = key.key[feature].at(2);
+    // Compiles a list of each phoneme found in those coordinates
+    for (auto rrr : rows)
+    {
+        for (auto cc: cols)
+        {
+            for (auto ppp: pairs)
+            {
+                auto phoneme = chart.chart.at(rrr).at(cc).at(ppp);
+                phonemes.insert(phoneme);
+            }
+        }
+    }
+    return phonemes;
+}
+
+// in: "BILA", {1, 3, 5, 7, 9, 11, 13, 14, 16, 18}
+// out: {3, 5, 7, 9, 11, 13, 16, 18}
+std::set<int> IPA::removeNotFeature(std::string& feature, std::set<int>& phonemes)
+{
+    // Determines which chart we're looking at
+    std::set<int> updatedPhonemes;
+    auto chaskey = ckey.key.find(feature);
+    auto vhaskey = vkey.key.find(feature);
+    IPAKey key;
+    IPAChart chart;
+    if (chaskey != ckey.key.end())
+    {
+        key = ckey;
+        chart = cchart;
+    }
+    else if (vhaskey != vkey.key.end())
+    {
+        key = vkey;
+        chart = vchart;
+    }
+    // doesn't change if key isn't found
+    else
+    {
+        return phonemes;
+    }
+    // Gets the rows, columns, and pairs to look at
+    std::vector<int> rows, cols, pairs;
+    rows = key.key[feature].at(0);
+    cols = key.key[feature].at(1);
+    pairs = key.key[feature].at(2);
+    // Compiles a list of phonemes to exclude
+    std::set<int> exclude;
+    for (auto rrr : rows)
+    {
+        for (auto cc: cols)
+        {
+            for (auto ppp: pairs)
+            {
+                auto phoneme = chart.chart.at(rrr).at(cc).at(ppp);
+                exclude.insert(phoneme);
+            }
+        }
+    }
+    // Adds all phonemes in original list that aren't in the exclude set
+    for (auto phon: phonemes)
+    {
+        if (!exclude.count(phon))
+        {
+            updatedPhonemes.insert(phon);
+        }
+    }
+    return updatedPhonemes;
 }
 
 // Loading one chart
