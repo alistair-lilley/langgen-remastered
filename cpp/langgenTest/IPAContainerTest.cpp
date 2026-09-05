@@ -134,5 +134,26 @@ bool TestIPAremoveNotFeature(IPA& ipa)
     
 }
 
+bool TestIPAgetFeatures(IPA& ipa)
+{
+    std::set<int> truthset = {
+        1, 14
+    };
+    try
+    {
+        ipa.loadIPAChartsKeys();
+        std::vector<std::string> features = {"BILA", "VLSS"};
+        std::set<int> phonemes;
+        ipa.getFeatures(features, phonemes);
+        return phonemes == truthset;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        return false;
+    }
+    
+}
+
 
 #endif
