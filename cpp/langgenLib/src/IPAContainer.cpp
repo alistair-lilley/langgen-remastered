@@ -6,6 +6,8 @@ This object holds the IPA data for the syllable generation process
 #include <string>
 #include <vector>
 #include <set>
+#include <algorithm>
+#include <iterator>
 #include <fstream>
 #include <iostream>
 #include "langgen/IPAContainer.h"
@@ -207,7 +209,25 @@ void IPA::getFeatures(std::vector<std::string>& features, std::set<int>& phoneme
 {
     for (auto feat: features)
     {
-        phonemes.merge(getFeature(feat));
+        // Get phonemes for feature
+        std::set<int> featurephonemes = getFeature(feat);
+        std::set<int> phonemeintersection;
+
+        if (!phonemes.empty())
+        {
+            // Get intersection of phonemes for feature and existing phonemes
+            std::set_intersection(
+                phonemes.begin(), phonemes.end(),
+                featurephonemes.begin(), featurephonemes.end(),
+                std::inserter(phonemeintersection, phonemeintersection.begin())
+            );
+        }
+        else
+        {
+            phonemeintersection = featurephonemes;
+        }
+
+        phonemes = phonemeintersection;
     }
 }
 

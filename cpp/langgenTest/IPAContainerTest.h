@@ -17,5 +17,7 @@ bool TestIPAgetFeature(IPA&);
 
 bool TestIPAremoveNotFeature(IPA&);
 
+bool TestIPAgetFeatures(IPA&);
+
 
 #endif

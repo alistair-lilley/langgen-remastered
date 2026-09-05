@@ -13,6 +13,7 @@ int main()
     passfails.push_back(TestIPAloadOneKey(testipa) ? "Testing loadOneKey passed" : "Testing loadOneKey failed");
     passfails.push_back(TestIPAgetFeature(testipa) ? "Testing getFeature passed" : "Testing getFeature failed");
     passfails.push_back(TestIPAremoveNotFeature(testipa) ? "Testing removeNotFeature passed" : "Testing removeNotFeature failed");
+    passfails.push_back(TestIPAgetFeatures(testipa) ? "Testing getFeatures passed" : "Testing getFeatures failed");
 
     for (auto test : passfails)
     {
