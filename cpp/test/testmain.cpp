@@ -1,5 +1,5 @@
-#ifndef LANGGENTEST_TESTMAIN_CPP
-#define LANGGENTEST_TESTMAIN_CPP
+#ifndef TEST_TESTMAIN_CPP
+#define TEST_TESTMAIN_CPP
 #include "IPAContainerTest.h"
 #include <iostream>
 #include <string>

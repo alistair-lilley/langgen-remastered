@@ -1,8 +1,8 @@
 /* IPA Container
 This object holds the IPA data for the syllable generation process
 */
-#ifndef LANGGENLIB_IPACONTAINER_H
-#define LANGGENLIB_IPACONTAINER_H
+#ifndef LIB_IPACONTAINER_H
+#define LIB_IPACONTAINER_H
 #include <string>
 #include <vector>
 #include <set>
