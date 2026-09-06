@@ -1,7 +1,7 @@
 /* Tests for IPAContainer
 */
-#ifndef LANGGENTEST_IPACONTAINERTEST_CPP
-#define LANGGENTEST_IPACONTAINERTEST_CPP
+#ifndef TEST_IPACONTAINERTEST_CPP
+#define TEST_IPACONTAINERTEST_CPP
 #include "IPAContainerTest.h"
 #include <map>
 #include <iostream>
