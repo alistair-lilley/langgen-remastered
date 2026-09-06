@@ -47,7 +47,7 @@ std::vector<std::string> SyllableGenerator::loadRules(std::string& dpath, std::s
     return rules;
 }
 
-std::vector<std::vector<std::vector<int>>> SyllableGenerator::parseGenerateRules(std::vector<std::string>& rules)
+std::vector<std::vector<std::set<std::vector<int>>>> SyllableGenerator::parseGenerateRules(std::vector<std::string>& rules)
 {
 
 }
