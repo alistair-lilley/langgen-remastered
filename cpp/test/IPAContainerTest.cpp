@@ -49,7 +49,8 @@ bool TestIPAloadOneChart(IPA& ipa)
     };
     try
     {
-        IPAChart outchart = ipa.loadOneChart(ipa.getcipac());
+        std::string cipac = ipa.getcipac();
+        IPAChart outchart = ipa.loadOneChart(cipac);
         return outchart.chart == truthchart;
     }
     catch (const std::exception& e) 
@@ -81,7 +82,8 @@ bool TestIPAloadOneKey(IPA& ipa)
     };
     try 
     {
-        IPAKey outkey = ipa.loadOneKey(ipa.getcipak());
+        std::string cipak = ipa.getcipak();
+        IPAKey outkey = ipa.loadOneKey(cipak);
         return outkey.key == truthkey;
     }
     catch (const std::exception& e) 
