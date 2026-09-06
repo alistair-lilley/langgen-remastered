@@ -406,4 +406,14 @@ IPAKey IPA::loadOneKey(std::string& keyname)
     return wholekey;
 }
 
+std::string IPA::getcipac()
+{
+    return cipac;
+}
+
+std::string IPA::getcipak()
+{
+    return cipak;
+}
+
 #endif
