@@ -37,8 +37,10 @@ public:
     std::set<int> removeNotFeature(std::string&, std::set<int>&);
     IPAChart loadOneChart(std::string&);
     IPAKey loadOneKey(std::string&);
-    std::string dirpath, cipac, vipac, cipak, vipak;
+    std::string getcipac();
+    std::string getcipak();
 private:
+    std::string dirpath, cipac, vipac, cipak, vipak;
     IPAChart cchart;
     IPAChart vchart;
     IPAKey ckey;

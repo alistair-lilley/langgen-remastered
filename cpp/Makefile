@@ -1,21 +1,21 @@
 CXX = g++
 CXXFLAGS = -g
-LDFLAGS = -IlanggenLib/include
-LDFLAGSTEST = -IlanggenTest
+LDFLAGS = -Ilib/include
+LDFLAGSTEST = -Itest
 TESTSOURCE = build/IPAContainer.o build/SylGenerator.o build/IPAContainerTest.o build/testmain.o
 
 	
-langgenApp/test: $(TESTSOURCE)
-	$(CXX) $(CXXFLAGS) $(TESTSOURCE) -o langgenApp/test
+app/test: $(TESTSOURCE)
+	$(CXX) $(CXXFLAGS) $(TESTSOURCE) -o app/test
 
-build/IPAContainer.o: langgenLib/src/IPAContainer.cpp langgenLib/include/langgen/IPAContainer.h
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -c langgenLib/src/IPAContainer.cpp -o build/IPAContainer.o
+build/IPAContainer.o: lib/src/IPAContainer.cpp lib/include/langgen/IPAContainer.h
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -c lib/src/IPAContainer.cpp -o build/IPAContainer.o
 
-build/SylGenerator.o: langgenLib/src/SylGenerator.cpp langgenLib/include/langgen/SylGenerator.h
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -c langgenLib/src/SylGenerator.cpp -o build/SylGenerator.o
+build/SylGenerator.o: lib/src/SylGenerator.cpp lib/include/langgen/SylGenerator.h
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -c lib/src/SylGenerator.cpp -o build/SylGenerator.o
 
-build/IPAContainerTest.o: langgenTest/IPAContainerTest.cpp langgenTest/IPAContainerTest.h
-	$(CXX) $(CXXFLAGS) $(LDFLAGSTEST) $(LDFLAGS) -c langgenTest/IPAContainerTest.cpp -o build/IPAContainerTest.o
+build/IPAContainertest.o: test/IPAContainerTest.cpp test/IPAContainertest.h
+	$(CXX) $(CXXFLAGS) $(LDFLAGSTEST) $(LDFLAGS) -c test/IPAContainertest.cpp -o build/IPAContainertest.o
 
-build/testmain.o: langgenTest/testmain.cpp
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDFLAGSTEST) -c langgenTest/testmain.cpp -o build/testmain.o
+build/testmain.o: test/testmain.cpp
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDFLAGSTEST) -c test/testmain.cpp -o build/testmain.o
